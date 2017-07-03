@@ -68,6 +68,7 @@ public:
 	Continue* eatContinue();
 	ClassDeclaration* eatClassDeclaration();
 	VariableDeclaration* eatVariableDeclaration();
+	void matchPattern(VariableDeclaration* vd);
 	Function* eatFunction();
 	VariableDeclaration* eatFunctionDeclaration();
 	Instruction* eatInstruction();

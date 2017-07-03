@@ -205,13 +205,14 @@ void Test::test_loops() {
 	 */
 	header("Pattern");
 	section("Let");
-	code("let a = [0] a").equals("[0]");
-	code("let [a] = [0] a").equals("0");
-	code("let [a] = [[0]] a").equals("[0]");
-	code("let [a, ..] = [0] a").equals("0");
-	code("let [a, ..] = [0, 1, 2] a").equals("0");
-	code("let [.., a] = [0] a").equals("0");
-	code("let [.., a] = [0, 1, 2] a").equals("2");
-	code("let [a, .., b] = [0, 1, 2] [a, b]").equals("[0, 2]");
-	code("let [a, .., b] = [0, 2] [a, b]").equals("[0, 2]");
+	code("let a = [42] a").equals("[42]");
+	code("let [a] = [42] a").equals("42");
+	code("let [a] = [[42]][0] a").equals("42");
+	code("let [a] = [[42]] a").equals("[42]");
+	code("let [a, ..] = [42] a").equals("42");
+	code("let [a, ..] = [42, 43, 44] a").equals("42");
+	code("let [.., a] = [42] a").equals("42");
+	code("let [.., a] = [42, 43, 44] a").equals("44");
+	code("let [a, .., b] = [42, 43, 44] [a, b]").equals("[42, 44]");
+	code("let [a, .., b] = [42, 44] [a, b]").equals("[42, 44]");
 }

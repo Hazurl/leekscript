@@ -267,18 +267,10 @@ VariableDeclaration* SyntaxicAnalyser::eatVariableDeclaration() {
 		vd->keyword.reset(eat_get(TokenType::VAR));
 	}
 
-	auto ident = eatIdent();
-	vd->variables.push_back(std::unique_ptr<Token> { ident });
-	if (t->type == TokenType::EQUAL) {
-		eat(TokenType::EQUAL);
-		vd->expressions.push_back(eatExpression());
+	if (t->type != TokenType::IDENT) {
+		matchPattern(vd);
 	} else {
-		vd->expressions.push_back(nullptr);
-	}
-
-	while (t->type == TokenType::COMMA) {
-		eat();
-		ident = eatIdent();
+		auto ident = eatIdent();
 		vd->variables.push_back(std::unique_ptr<Token> { ident });
 		if (t->type == TokenType::EQUAL) {
 			eat(TokenType::EQUAL);
@@ -287,7 +279,44 @@ VariableDeclaration* SyntaxicAnalyser::eatVariableDeclaration() {
 			vd->expressions.push_back(nullptr);
 		}
 	}
+
+	while (t->type == TokenType::COMMA) {
+		eat();
+		if (t->type != TokenType::IDENT) {
+			matchPattern(vd);
+		} else {
+			auto ident = eatIdent();
+			vd->variables.push_back(std::unique_ptr<Token> { ident });
+			if (t->type == TokenType::EQUAL) {
+				eat(TokenType::EQUAL);
+				vd->expressions.push_back(eatExpression());
+			} else {
+				vd->expressions.push_back(nullptr);
+			}
+		}
+	}
 	return vd;
+}
+
+void SyntaxicAnalyser::matchPattern(VariableDeclaration* vd) {
+	if (t->type == TokenType::OPEN_BRACKET) {
+		auto open_br = eat_get();
+		auto ident = eatIdent();
+		auto close_br = eat_get(TokenType::CLOSING_BRACKET);
+
+		vd->variables.push_back(std::unique_ptr<Token> { ident });
+
+		auto aa = new ArrayAccess();
+		aa->open_bracket = std::shared_ptr<Token>{ open_br };
+		aa->close_bracket = std::shared_ptr<Token>{ close_br };
+		aa->key = new Number("0", std::shared_ptr<Token>{ ident });
+		eat(TokenType::EQUAL);
+		aa->array = eatExpression();
+		aa->key2 = nullptr;
+
+		vd->expressions.push_back(aa);
+	} else 
+		errors.push_back(SyntaxicalError(t, SyntaxicalError::Type::PATTERN_NOT_MATCHING, {t->content}));
 }
 
 Function* SyntaxicAnalyser::eatFunction() {
