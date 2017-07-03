@@ -199,4 +199,19 @@ void Test::test_loops() {
 	code("let b = 'b' match 'e' { ..b: 1 1..6|0..9: 2 ..|..: 3}").equals("3");
 	code("let a = match 3 { 1 : 1 2 : 2 3 : 3 } a").equals("3");
 	code("match 2 { 1 : 1 2 : {} 3 : 3 }").equals("{}");
+
+	/*
+	 * Pattern
+	 */
+	header("Pattern");
+	section("Let");
+	code("let a = [0] a").equals("[0]");
+	code("let [a] = [0] a").equals("0");
+	code("let [a] = [[0]] a").equals("[0]");
+	code("let [a, ..] = [0] a").equals("0");
+	code("let [a, ..] = [0, 1, 2] a").equals("0");
+	code("let [.., a] = [0] a").equals("0");
+	code("let [.., a] = [0, 1, 2] a").equals("2");
+	code("let [a, .., b] = [0, 1, 2] [a, b]").equals("[0, 2]");
+	code("let [a, .., b] = [0, 2] [a, b]").equals("[0, 2]");
 }
