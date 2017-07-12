@@ -3,8 +3,34 @@
 
 #include <iostream>
 #include <string>
+#include <set>
 #include "../src/vm/VM.hpp"
 #include "../src/vm/value/LSNumber.hpp"
+
+#define LIST_TEST(X) \
+	X(test_general, "gen") \
+	X(test_types, "type") \
+	X(test_booleans, "bool") \
+	X(test_numbers, "num") \
+	X(test_strings, "str") \
+	X(test_arrays, "arr") \
+	X(test_intervals, "int") \
+	X(test_map, "map") \
+	X(test_set, "set") \
+	X(test_objects, "obj") \
+	X(test_functions, "fun") \
+	X(test_classes, "cla") \
+	X(test_loops, "loop") \
+	X(test_operators, "optr") \
+	X(test_references, "ref") \
+	X(test_exceptions, "ex") \
+	X(test_operations, "opti") \
+	X(test_system, "sys") \
+	X(test_json, "json") \
+	X(test_files, "file") \
+	X(test_doc, "doc") \
+	X(test_utils, "util")
+	
 
 class Test {
 private:
@@ -27,6 +53,7 @@ public:
 	virtual ~Test();
 
 	int all();
+	int selected(std::set<std::string> tests_selected);
 	void header(std::string);
 	void section(std::string);
 
@@ -35,28 +62,9 @@ public:
 	Input file(const std::string& file_name);
 	Input file_v1(const std::string& file_name);
 
-	void test_general();
-	void test_types();
-	void test_operations();
-	void test_operators();
-	void test_references();
-	void test_system();
-	void test_objects();
-	void test_strings();
-	void test_numbers();
-	void test_booleans();
-	void test_arrays();
-	void test_map();
-	void test_set();
-	void test_functions();
-	void test_loops();
-	void test_classes();
-	void test_files();
-	void test_doc();
-	void test_intervals();
-	void test_json();
-	void test_exceptions();
-	void test_utils();
+#define F(func, str) void func();
+	LIST_TEST(F)
+#undef F
 
 	class Input {
 	public:
@@ -92,6 +100,8 @@ public:
 		void pass(std::string expected);
 		void fail(std::string expected, std::string actuel);
 	};
+
+	
 };
 
 

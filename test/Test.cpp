@@ -18,38 +18,37 @@ Test::Test() : vmv1(true) {
 
 Test::~Test() {}
 
-int main(int, char**) {
+int main(int argc, char** argv) {
 	srand(time(0));
-	return Test().all();
+	if (argc <= 1) {
+		return Test().all();
+	} else {
+		std::set<std::string> args = {};
+		for (int c = 1; c < argc; ++c)
+			args.emplace(argv[c]);
+			return Test().selected(args);
+	}
 }
 
 int Test::all() {
+#define F(func, str) str,
+	return selected(
+		{
+			LIST_TEST(F)
+		}
+	);
+#undef F
+}
+
+int Test::selected(std::set<std::string> tests_selected) {
 
 	clock_t begin = clock();
 	exeTime = 0;
 
-	test_general();
-	test_types();
-	test_booleans();
-	test_numbers();
-	test_strings();
-	test_arrays();
-	test_intervals();
-	test_map();
-	test_set();
-	test_objects();
-	test_functions();
-	test_classes();
-	test_loops();
-	test_operators();
-	test_references();
-	test_exceptions();
-	test_operations();
-	test_system();
-	test_json();
-	test_files();
-	test_doc();
-	test_utils();
+#define F(func, str) if (tests_selected.find(str) != tests_selected.end()) func();
+	LIST_TEST(F)
+#undef F
+
 
 	double elapsed_secs = double(clock() - begin) / CLOCKS_PER_SEC;
 	int errors = (total - success_count);

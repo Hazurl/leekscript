@@ -106,7 +106,7 @@ build/leekscript-coverage: $(BUILD_DIR) $(OBJ_COVERAGE) $(OBJ_TEST)
 
 # Run tests
 test: build/leekscript-test
-	@build/leekscript-test
+	@build/leekscript-test $(SELECTED)
 
 # Benchmark
 benchmark-dir:
